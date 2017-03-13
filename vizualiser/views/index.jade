@@ -1,0 +1,11 @@
+extends layout
+
+block content 
+  
+  h1 Upload File
+  
+  .container
+    .upload(style="width:100%")
+      form(action="/upload", method="post", enctype="multipart/form-data")
+        input(type="file", class="filestyle", data-classButton="btn btn-primary", data-input="false", name="file") 
+        input(type="submit", class="filestyle", data-classButton="btn btn-primary")

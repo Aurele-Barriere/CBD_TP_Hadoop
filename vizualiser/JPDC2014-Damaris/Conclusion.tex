@@ -1,0 +1,64 @@
+As HPC resources exceeding millions of cores become a reality, science and engineering codes invariably
+must be modified in order to efficiently exploit these resources. An important challenge in
+maintaining high performance is data management, which nowadays does not only include writing
+and storing data efficiently, but also analyzing and visualizing these data in order to retrieve a scientific insight.
+
+This paper provides a comprehensive overview of Damaris, an approach which proposes to offload data management tasks,
+including I/O, post-processing and visualization, into dedicated cores of multicore nodes. Damaris
+efficiently leverages shared-memory to improve memory usage when transferring data from
+cores running the simulation to cores running data-related tasks. Thanks to its plugin system and 
+an external description of data, Damaris is highly adaptable to a wide range of simulations.
+
+			We first used Damaris to offload I/O tasks in dedicated cores, and compared
+			the resulting performance with the two standard approaches to I/O in HPC simulations:
+			the File-per-process and the Collective I/O approaches. By gathering I/O operations
+			in a reduced number of cores and by avoiding synchronization between these cores,
+			Damaris is able to completely hide all I/O-related costs, and in particular the
+			I/O variability. Our experiments using the CM1 atmospheric simulation and the Nek5000
+			computation fluid dynamic, in particular on up to
+			9216 cores of the Kraken supercomputer, showed that Damaris can achieve a 15 times
+			higher throughput compared with the collective I/O approach. Damaris also dramatically
+			reduces the application run time, leading to a $3.5\times$ speedup in CM1, for example.
+			Observing that dedicated cores still remain idle a large fraction of the time,
+			we implemented several improvements, including an overhead-free data compression
+			that achieved up to 600\% compression ratio.
+			
+			We then leveraged the time spared by Damaris on dedicated cores by extending it 
+			to support in situ visualization through a connection with the VisIt visualization software.
+			We evaluated our Damaris-based in situ visualization framework on the Grid'5000 and Blue Waters platforms.
+			We showed that Damaris can fully hide the performance variability induced 
+			by in situ visualization tasks as well, even in scenarios involving interactions with a user. 
+			Besides, Damaris reduces visualization-related code modifications 
+			to a minimum in existing simulations.
+			
+			Finally we further extended Damaris to support the use of dedicated nodes instead
+			of dedicated cores. Based on our framework, we perforùmed a thorough comparison
+			of the dedicated cores, dedicated nodes and time-partitioning approaches for I/O
+			on 3 different clusters of the Grid'5000 testbed, with the CM1 and Nek5000 simulations.
+			Our evaluation shows that approaches based on dedicated resources always perform
+			better than the time-partitioning approach for the selected simulations. They both manage
+			to hide the I/O-related costs and, as a result, improve the overall simulation performance.
+			While the choice of an approach based on dedicated cores over an approach based on
+			dedicated nodes is primarily driven by the number of cores per node available in the 
+			platform, this choice also depends on the scalability of the application, its memory usage,
+			and the potential use of spare time in dedicated resources.
+			
+To our knowledge, Damaris is the first middleware available to the community\footnote{See \url{http://damaris.gforge.inria.fr}}  
+that offers the use of dedicated cores or dedicated nodes to serve data management tasks ranging from
+I/O to in situ visualization. This work paves the way for a number of new research directions with high potential impact. 
+Our study of in situ visualization using Damaris and CM1 revealed that in some simulations
+		such as climate models, an important fraction of the data produced by the simulation does not actually
+		contain any part of the phenomenon that are of interest to scientists. When visualizing this data
+		in situ, it thus becomes possible to lower the resolution of non-interesting parts in order
+		to increase the performance of the visualization process, an approach that we call ``smart in situ visualization''.
+		Challenges to implement smart in situ visualization include automatically discriminating relevant and non-relevant
+		data within the simulation while this data is being produced. This detection should be made without
+		user intervention and be fast enough to not diminish the overall performance of the visualization process.
+		The plugin system of Damaris together with its existing connection with the VisIt visualization software 
+		provide an excellent ground to implement and evaluate smart in situ visualization.
+	
+%
+%In the future, we plan to leverage the high flexibility of Damaris to further improve
+%the performance of in situ visualization by having Damaris automatically detect interesting features of the
+%datasets produced by the simulation. 
+We also plan to investigate ways to reduce the energy consumption  of simulations that use approaches like Damaris. We have already shown that the time spared by dedicated cores in Damaris can be leveraged to compress the data prior to storing it. An immediate question that can be asked is to which extent does compression in Damaris impacts this energy/performance tradeoff. On one hand, compression reduces the amount of data transferred and thus, the network traffic, which leads to lower energy consumption from data movements. On the other hand, compressing data requires more computation time and higher energy consumption as a result of data movement in the local memory hierarchy. Consequently, a promising direction will consist in investigating the tradeoff between energy, performance and compression level.

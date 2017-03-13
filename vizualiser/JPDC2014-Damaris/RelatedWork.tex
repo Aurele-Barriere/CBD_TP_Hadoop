@@ -1,0 +1,203 @@
+In this section, we position our work with respect to related work.
+We start by discussing approaches that attempt at improving I/O performance.
+We then examine approaches to in situ visualization.
+
+\subsection{Damaris in the ``I/O Landscape''}
+
+Through its capability of gathering data into larger buffers and files, 
+Damaris can be compared to the data aggregation 
+feature in ROMIO~\cite{thakur1999data}. This feature is an optimization of
+Collective I/O that leverages a subset of processes, called ``aggregators'', to
+actually perform the I/O on behalf of other processes.
+Yet, data aggregation is performed synchronously in ROMIO:
+all processes that do not perform actual writes in the file system must
+wait for the aggregator processes to complete their operations. Besides,
+aggregators are not dedicated processes, they run the simulation after completing their I/O.
+Through dedicated cores, Damaris can perform data aggregation 
+and potential transformations in an asynchronous
+manner and still use the idle time remaining in the dedicated cores.
+
+Other efforts focus on overlapping computation with I/O in order
+to reduce the impact of I/O latency on overall performance. Overlap
+techniques can be implemented directly within
+simulations~\cite{patrick2008comparative}, using asynchronous
+communications. Non-blocking I/O primitives started to appear as
+part of the current MPI~3 standard, these primitives are still implemented as blocking in practice. 
+
+Other approaches leverage data-staging and caching
+mechanisms~\cite{nisar2009scaling,isaila2010design}, or
+forwarding approaches~\cite{ali2009scalable} to achieve better I/O
+performance. Forwarding architectures run on top of dedicated
+resources in the platform, which are not configurable by the end-user, that is,
+the user cannot run custom data processing in forwarding resources.
+Similarly to the parallel file system, these dedicated resources are shared by all users. 
+This leads to cross-application access contention and thus, to I/O variability. 
+However, the trend toward I/O delegate systems underlines the need for new I/O approaches. 
+Our approach relies on dedicated I/O cores at the
+application level, or dedicated nodes bound to the application, 
+rather than relying on hardware I/O-dedicated or forwarding
+nodes, with the advantage of letting users configure their dedicated resources
+to best fit their needs.
+
+The use of local memory to alleviate the load on the file system is not new.
+The Scalable Checkpoint/Restart (SRC) by Moody et al.~\cite{moody2010design} already makes
+use of node-level storage to avoid the heavy load caused by periodic global 
+checkpoints. Yet their work does not use dedicated resources or threads to 
+handle or process data, and the checkpoints are not asynchronous.
+
+\paragraph{Dedicated-Core-Based Approaches}
+Closest to our work are the approaches by Li et al.~\cite{li2010functional},
+and Ma et al.~\cite{ma2006highlevel}. While the
+general goals of these approaches are similar (leveraging
+service-dedicated cores for non-computational tasks), their design is
+different, and so is the focus and the (much lower) scale of their
+evaluation. The first one 
+mainly explores the idea of using dedicated cores in conjunction with
+SSDs to improve the overall I/O
+throughput. Architecturally, it relies on a FUSE interface, which
+introduces unnecessary copies through the kernel and reduces the degree of coupling 
+between cores. Using small benchmarks we noticed that such a FUSE interface is 
+about 10 times slower in transferring data between cores than using shared memory.
+In the second, active buffers are handled by
+dedicated processes that can run on any node and interact with cores
+running the simulation through the network.  In contrast to both
+approaches, Damaris makes a much more efficient design choice using
+the shared intra-node memory, thereby avoiding costly copies and
+buffering. The approach defended by Li et al. is
+demonstrated on a small 32-node cluster (160 cores), where the maximum
+scale used in the work by Ma et al. is 512~cores on a 
+Power3 machine, for which the overall improvement achieved for the global
+run time is marginal. Our experimental analysis is much more extensive
+and more relevant for today's scales of HPC simulations: we
+demonstrated the excellent scalability of Damaris on a real
+supercomputer (Kraken, ranked $11^{th}$ in the Top500 supercomputer list at the time
+of the experiments) with up to almost 10,000 cores, and with the CM1 tornado simulation, one of the
+target applications of the Blue Waters post-Petascale supercomputer project. 
+We demonstrated not only a speedup in I/O throughput by a
+factor of 15 (never achieved by previous approaches), but we also
+showed that Damaris totally hides the I/O jitter and substantially cuts
+down the application run time at such high scales. With 
+Damaris, the execution time for CM1 at this scale is even divided by 3.5 
+compared to approaches based on collective I/O!  
+Moreover, we further explored how
+to leverage the spare time of the dedicated cores. We demonstrated for example
+that it can be used to compress data by a factor of 6.
+
+\subsection{Damaris in the ``In Situ Visualization Landscape''}
+
+\paragraph{Loosely-Coupled Visualization Strategies}
+Ellsworth et al.~\cite{ellsworth2006concurrent} propose to use distributed shared memory 
+(DSM) to avoid writing files when performing concurrent visualization. Such an 
+approach has the advantage of decoupling the simulation and visualization 
+processes, but reading data from the memory of the simulation's processors can 
+increase run time variability. The scalability
+of a distributed shared memory design is also a limiting factor.
+
+Rivi et al.~\cite{rivi2011insitu} introduce the ICARUS plugin for ParaView together with a 
+description of VisIt and ParaView's in situ visualization interfaces. ICARUS employs an 
+HDF5 DSM file driver to ship data to a distributed shared memory buffer that is
+used as input to a ParaView pipeline. This DSM stores a view of the HDF5 
+files that can be concurrently accessed by the simulation and visualization tools.
+The HDF5 API allows to bridge the simulation and 
+ParaView with minimum code changes (provided that the simulation already uses HDF5),
+but it produces multiple copies of the data and a complete transformation of data
+into an intermediate HDF5 representation.
+Also, the visualization library on the remote resource requires the original data 
+to conform to this HDF5 representation. Damaris, on the other hand, is not based
+on any data format and efficiently leverages shared-memory to avoid as much as possible
+unnecessary copies of data. Besides, its API is simpler than that of HDF5 for simulations
+that do not already use HDF5.
+
+Malakar et al.~\cite{malakar2010adaptive} present an adaptive framework for 
+loosely-coupled visualization, in which data is sent over a network to a remote 
+visualization cluster at a frequency that is dynamically adapted depending on resource availability. 
+Our approach also adapts output frequency to resource usage.
+
+The PreDatA~\cite{zheng2010predata} middleware proposes to dedicate a set of nodes as a 
+staging area to perform a first step of data processing prior to I/O for the 
+purpose of subsequent visualization. The coupling between the simulation and the
+staging area is done through the ADIOS~\cite{lofstead2008flexible} I/O layer. 
+The use of the ADIOS backend allows to decouple the simulation and the visualization by
+simply integrating data analysis as part of an existing I/O stack~\cite{zheng2011highend}.
+While Damaris borrows the use of an XML file from ADIOS in order to simplify its API,
+it makes the orthogonal choice of using dedicated cores rather than dedicated nodes.
+Thus it avoids potentially costly data movements across nodes.
+
+GLEAN~\cite{rasquin2011electronic} provides in situ visualization capabilities with dedicated nodes. 
+The authors use the PHASTA simulation on the Intrepid supercomputer 
+and ParaView for analysis and visualization on the Eureka machine. 
+Part of the analysis in GLEAN is done in a time-partitioning manner at the simulation side,
+which makes it a hybrid approach involving tightly- 
+and loosely-coupled in situ analysis. Our approach shares some of the same 
+goals, namely to couple a simulation with run-time visualization, but we run the 
+visualization tool on one core of the same node instead of dedicated nodes.
+GLEAN is also used in conjunction with ADIOS~\cite{moreland2011examples}.
+
+EPSN~\cite{esnard2006steering} is an environment providing steering and 
+visualization capabilities to existing parallel simulations. Simulations 
+instrumented with EPSN ship their data to a visualization pipeline running on a
+remote cluster, thus EPSN is an hybrid approach including both code
+changes and the use of additional remote resources. In contrast to EPSN, 
+all visualization tasks using Damaris can be performed
+on dedicated cores, closer to the simulation, thus reducing the network overhead.
+
+Zheng et al.~\cite{zheng2011insitu} have provided a model to evaluate the tradeoff between 
+in situ synchronous visualization and 
+loosely-coupled visualization through staging areas. 
+This model can be applied to compare in situ 
+using dedicated cores instead of remote resources, with the 
+difference being that approaches utilizing dedicated cores do not have network communication 
+overhead.
+
+\paragraph{Tightly-Coupled In Situ Visualization}
+When it comes to tightly integrate analysis tasks in simulations codes, the 
+existing solutions often do not meet all of the requirements presented in
+Section~\ref{sec:background}.
+
+SciRun~\cite{johnson1999interactive} is a complete computational-steering 
+environment that includes visualization. Its in situ capabilities can be used 
+with any simulation implemented with SciRun solvers and structures.
+SciRun is an example of the trend towards integrating visualization, data 
+analysis and computational steering in the simulation process.
+Simulations are written specifically for use in SciRun in order to exchange 
+data with zero data copy, but  
+adapting an existing application to this framework can be a daunting task.
+
+DIY~\cite{Peterka11Scalable} offers a number of communication primitives
+allowing to easily build efficient parallel in situ analysis and visualization algorithms.
+However it does not aim to provide a way to dedicate resources on which to run these algorithms.
+DIY could therefor very well be coupled with Damaris to implement powerful in situ
+analysis algorithms while Damaris provides the flexibility of running them on dedicated resources.
+
+Tu et al.~\cite{tu2006mesh} propose an end-to-end approach for an earthquake 
+simulation using the Hercule framework. All the components of the simulation, 
+including visualization, run in parallel on the same machine, and the 
+only output consists of a set of JPEG files.
+The data processing tasks in Hercule are still performed in a synchronous manner, 
+and any operation initiated by a process to perform these tasks impacts the 
+performance of the simulation.
+
+In the context of ADIOS, CoDS (Co-located DataSpaces)~\cite{zhang2012situ} 
+builds a distributed object-based data space abstraction 
+and can use dedicated nodes (and recently dedicated cores with shared memory) 
+with PreDatA, DataStager and DataSpace. 
+ADIOS+CoDS has also been used for code coupling~\cite{zhang2012ipdps} 
+and demonstrated with different simulation models.
+While the use of dedicated cores to accomplish two different tasks is a common
+theme in our approach, our objective in this chapter was to compare the performance impact on the 
+simulation of a collocated visualization task with a directly embedded 
+visualization.
+Besides, placement of data in shared memory in the aforementioned works is done through 
+the ADIOS interface, which creates a copy of data from the simulation to the 
+shared memory using a file-writing interface. We leverage the double-buffering 
+technique usually implemented in simulations as an efficient alternative for sharing data.
+
+Posteriorly to our work, Dreher and Rafin~\cite{dreher2014flexible} built on the FlowVR 
+framework (initially proposed for real-time interactive parallel visualization in 
+the context of virtual reality) to provide a solution integrating both time partitioning,
+dedicated cores and dedicated nodes. They address usability
+by providing a simple \emph{put}/\emph{get} interface and a Python script that describes
+the various component of the visualization pipeline. They went one step further by
+providing in situ interactive simulation steering in a cave-like system with haptic
+devices~\cite{dreher2014fd169}, highlighting a case where the simulation process
+and research are part of the same workflow.

@@ -1,0 +1,78 @@
+extends layout
+
+block content 
+  
+  h1 #{locals.parsed}
+
+  .div(id="alert")
+  .row
+    .div(id="tasktype-chart")
+      .div
+        a(class="reset", href="javascript:taskTypeChart.filterAll();dc.redrawAll();", style="display: none;") reset
+
+    .div(id="taskstatus-chart")
+      .div
+        a(class="reset", href="javascript:taskStatusChart.filterAll();dc.redrawAll();", style="display: none;") reset
+
+    .div(id="tasklocality-chart")
+      .div
+        a(class="reset", href="javascript:taskLocalityChart.filterAll();dc.redrawAll();", style="display: none;") reset
+
+    .div(id="taskspec-chart")
+      .div
+        a(class="reset", href="javascript:taskSpecChart.filterAll();dc.redrawAll();", style="display: none;") reset
+
+  .row
+    .div(id="tasksattempts-chart")
+      .div
+        a(class="reset", href="javascript:taskAttemptsChart.filterAll();dc.redrawAll();", style="display: none;") reset
+
+  .row
+    .div(id="tasksattemptsbyhost-chart")
+      .div
+        a(class="reset", href="javascript:taskAttemptsByHostChart.filterAll();dc.redrawAll();", style="display: none;") reset
+
+
+  script(src="/javascripts/main.js")
+  script.
+    d3.json("/json/jobs/#{locals.parsed}", function(error,data) {
+      if (error){
+        document.getElementById("#alert").innerHTML = "no data available (yet ?)";
+        return console.warn(error);
+      }
+
+      console.log(data);
+      globaldata = data;
+    
+      mapAttempttasks = Object.keys(globaldata.MapAttempt).map(function(key) {
+            return globaldata.MapAttempt[key];
+      });
+
+      reduceAttempttasks = Object.keys(globaldata.ReduceAttempt).map(function(key) {
+            return globaldata.ReduceAttempt[key];
+      });
+
+      tasks = mapAttempttasks.concat(reduceAttempttasks);
+
+      ndx = crossfilter(tasks);
+
+      taskTypeChart = dc.pieChart("#tasktype-chart");
+      render_pie_task(taskTypeChart, tasks, ndx, "TASK_TYPE");
+
+      taskStatusChart = dc.pieChart("#taskstatus-chart");
+      render_pie_task(taskStatusChart, tasks, ndx, "TASK_STATUS");
+
+      taskSpecChart = dc.pieChart("#taskspec-chart");
+      render_pie_task(taskSpecChart, tasks, ndx, "AVATAAR");
+
+      taskLocalityChart = dc.pieChart("#tasklocality-chart");
+      render_pie_task(taskLocalityChart, tasks, ndx, "LOCALITY");
+
+      taskAttemptsChart = dc.rectChart("#tasksattempts-chart")
+      render_gantt_by_start_time(taskAttemptsChart, tasks, ndx);
+  
+      taskAttemptsByHostChart = dc.rectChart("#tasksattemptsbyhost-chart")
+      render_gantt_by_host(taskAttemptsByHostChart, tasks, ndx);
+
+      dc.renderAll();
+    });

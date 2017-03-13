@@ -1,0 +1,18 @@
+<div>
+  <h1>Logs List</h1>
+  Search: <input ng-model="query">
+  <div class="row" ng-switch on="logs.length">
+    <ul ng-switch-when="0">
+      <li><em>No polls in database. Would you like to
+        <a href="#/new">create one</a>?</li>
+      </ul>
+      <ul ng-switch-default>
+        <li ng-repeat="log in logs | filter:query">
+        <a href="#/log/{{log._id}}">{{log.name}}</a>
+        <span class="tag" ng-repeat="tag in log.tags">
+                  {{tag.name}}
+        </span>
+        </li>
+      </ul>
+    </div>
+</div>

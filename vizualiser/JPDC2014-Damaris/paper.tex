@@ -1,0 +1,281 @@
+%% This is file `elsarticle-template-1-num.tex',
+%%
+%% Copyright 2009 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
+%% Template article for Elsevier's document class `elsarticle'
+%% with numbered style bibliographic references
+%%
+%% $Id: elsarticle-template-1-num.tex 149 2009-10-08 05:01:15Z rishi $
+%% $URL: http://lenova.river-valley.com/svn/elsbst/trunk/elsarticle-template-1-num.tex $
+%%
+\documentclass[preprint]{elsarticle}
+
+\usepackage[outercaption]{sidecap}
+\sidecaptionvpos{figure}{c}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{rotating}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{hyperref}
+
+%\usepackage{caption}
+%\captionsetup{belowskip=12pt,aboveskip=4pt}
+
+
+\lstset{%
+  basicstyle=\ttfamily\scriptsize,%
+  columns=fullflexible,% 
+  numbers=left,%
+  numberstyle=\scriptsize,%
+  stepnumber=1,%
+  language=C,%
+  frame=lrbt,%
+  xleftmargin=\fboxsep,%
+  xrightmargin=-\fboxsep
+}%
+
+\interfootnotelinepenalty=10000
+
+\newfloat{Listing}{h}{myc}
+%\AtBeginDocument{\numberwithin{Listing}{section}}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+%% \usepackage{graphicx}
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+%% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%
+%% \biboptions{comma,round}
+
+% \biboptions{}
+\usepackage{atbegshi}% http://ctan.org/pkg/atbegshi
+
+
+\journal{Journal of Parallel and Distributed Computing}
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{Damaris: Addressing Performance Variability in Data Management for Post-Petascale Simulations}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+%% Group authors per affiliation:
+\author[ens]{Matthieu Dorier\corref{mycorrespondingauthor}}
+\cortext[mycorrespondingauthor]{Corresponding author}
+\ead{matthieu.dorier@irisa.fr}
+\author[inria]{Gabriel Antoniu}
+\author[anl]{Franck Cappello}
+\author[anl,uiuc]{Marc Snir}
+\author[uiuc]{Roberto Sisneros}
+\author[inria]{Or\c{c}un Yildiz}
+\author[inria]{Shadi Ibrahim}
+\author[anl]{Tom Peterka}
+\author[cmich]{Leigh Orf}
+%\author[uiuc]{Dave Semeraro}
+
+
+
+\address[ens]{ENS Rennes, IRISA, Rennes, France}
+\address[inria]{Inria, Rennes - Bretagne Atlantique Research Centre, France}
+\address[anl]{Argonne National Laboratory, Lemont, IL, USA}
+\address[uiuc]{University of Illinois at Urbana Champaign, IL, USA}
+\address[cmich]{Central Michigan University, MI, USA}
+
+\begin{abstract}
+%Over the past few years, the increasing gap between the computational performance
+%and the performance of I/O systems in post-petascale supercomputers has led to new approaches
+%to data management. While some of these approaches focus on improving the I/O
+%and storage performance for the immense amounts of data produced by HPC simulations,
+%other aim to directly connect analysis and visualization tools to running simulations, bypassing
+%data storage in order to retrieve a scientific insight earlier on. An important challenge
+%for these new approaches consists of reducing the high performance variability.
+With exascale computing on the horizon, reducing performance variability in data management tasks (storage, visualization, analysis, etc.) is becoming a key challenge in sustaining high performance.
+This variability significantly impacts the overall application performance at scale and its predictability over time. 
+
+In this paper, we present Damaris, a system that leverages \emph{dedicated cores}
+in multicore nodes to offload data management tasks, including I/O, data compression,
+scheduling of data movements, in situ analysis and visualization. We evaluate Damaris
+with the CM1 atmospheric simulation and the Nek5000 computational fluid dynamic simulation 
+on four platforms, including NICS's Kraken and NCSA's Blue Waters.
+Our results show in particular that 
+(1) Damaris fully hides the I/O variability as well as all I/O-related costs, which 
+makes simulation performance predictable; 
+(2) it increases the sustained write throughput by a factor of up to 15 compared with standard I/O approaches; 
+(3) it allows almost perfect scalability of the simulation up to over 9,000 cores, as opposed to state-of-the-art 
+approaches that fail to scale;
+(4) it enables a seamless connection to the VisIt visualization software to perform in situ analysis and visualization
+in a way that does not impact the performance of the simulation, nor its variability.
+
+In addition, we further extended our implementation of Damaris to also support the use of \emph{dedicated
+nodes} and conducted a thorough comparison of the two approaches --dedicated cores and dedicated nodes--
+for I/O tasks with the aforementioned applications.
+\end{abstract}
+
+\begin{keyword}
+Exascale Computing, I/O, In Situ Visualization, Dedicated Cores, Dedicated Nodes, Damaris
+\end{keyword}
+
+\end{frontmatter}
+
+%\tableofcontents
+
+%%
+%% Start line numbering here if you want
+%%
+% \linenumbers
+
+%% main text
+\section{Introduction}
+\label{sec:introduction}
+\input{Introduction}
+
+\section{Background and Motivation}
+\label{sec:background}
+\input{Background}
+
+\section{The Damaris Approach: an Overview}
+\label{sec:damaris}
+\input{Damaris}
+
+\section{Evaluation}
+\label{sec:evaluation}
+\input{Evaluation}
+%\input{EvaluationInSitu}
+
+\section{Discussion: Dedicated Cores vs. Dedicated Nodes}
+\label{sec:discussion}
+\input{Discussion}
+
+\section{Related Work}
+\label{sec:related}
+\input{RelatedWork}
+
+\section{Conclusion and Future Directions}
+\label{sec:conclusion}
+\input{Conclusion}
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+
+%% \section{}
+%% \label{}
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%% Usage of \cite is as follows:
+%%   \cite{key}          ==>>  [#]
+%%   \cite[chap. 2]{key} ==>>  [#, chap. 2]
+%%   \citet{key}         ==>>  Author [#]
+
+%% References with bibTeX database:
+
+\bibliographystyle{model1-num-names}
+\bibliography{biblio}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model1-num-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have the following form:
+%%   \bibitem{key}...
+%%
+
+% \bibitem{}
+
+% \end{thebibliography}
+
+
+\end{document}
+
+%%
+%% End of file `elsarticle-template-1-num.tex'.

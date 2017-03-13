@@ -1,0 +1,61 @@
+extends layout
+
+block content
+
+  h1 Jobs
+
+  .div(id="alert")
+
+  .row
+    .div(id="jobs-chart")
+      .h4 Jobs duration
+      .div
+        a(class="reset", href="javascript:jobsChart.filterAll();dc.redrawAll();", style="display: none;") reset
+
+  .row
+    .div(id="effective-chart")
+      .h4 Jobs waiting time
+      .div
+        a(class="reset", href="javascript:effectiveChart.filterAll();dc.redrawAll();", style="display: none;") reset
+
+  script(src="/javascripts/jobs.js")
+  script.
+    var jobs_s = "#{jobs}";
+    var jobs = jobs_s.split(',');
+
+    var jobCounters = [];
+    console.log(jobs);
+    // get the json for each
+    jobs.forEach(function(job) {
+
+      d3.json("/json/jobs/"+job, function(error,data) {
+        if (error){
+          document.getElementById("#alert").innerHTML = "no data available (yet ?)";
+          return console.warn(error);
+        }
+
+        console.log(data);
+
+        // only one key here.
+        var key = Object.keys(data.Job);
+        var value = key.map(function(v) { return data.Job[v]; });
+
+        jobCounters.push(value[0]);
+        redrawAll();
+
+      }); //d3.json
+
+    });  //foreach
+
+    function redrawAll() {
+
+      ndx = crossfilter(jobCounters);
+
+      jobsChart = dc.rectChart("#jobs-chart")
+      render_jobs_time(jobsChart, jobCounters, ndx, "SUBMIT_TIME", "FINISH_TIME");
+
+      effectiveChart = dc.rectChart("#effective-chart")
+      render_jobs_time(effectiveChart, jobCounters, ndx, "SUBMIT_TIME", "LAUNCH_TIME");
+
+      dc.renderAll();
+    }

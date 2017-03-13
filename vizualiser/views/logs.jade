@@ -1,0 +1,18 @@
+extends layout
+
+block content
+
+  h1 Logs
+
+  form(name="jobs", action="/jobs", method="get")
+    each file in files
+      .row
+        .col-md-5 #{file}
+        .col-md-1
+          a(href="/jobs/#{file}/attempts") attempts
+        .col-md-1
+            a(href="/jobs/#{file}/tasks") tasks
+        .col-md-1
+            input(type="checkbox", name="job[]", value="#{file}")
+
+    input(type="submit", value="jobs")

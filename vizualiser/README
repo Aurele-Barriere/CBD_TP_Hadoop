@@ -1,0 +1,8 @@
+Vizualising Hadoop log files.
+
+1) have nodejs + npm installed
+
+2) run npm install
+
+3) node app.js
+

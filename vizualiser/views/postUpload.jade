@@ -1,0 +1,16 @@
+extends layout
+
+block content 
+  
+  h1 Upload File
+  
+  .container
+    p Your file is beeing parsed ...
+    p You can access it following one of the links below :
+    ul
+      li
+        a(href="/json/logs/#{locals.parsed}") /json/logs/#{locals.parsed}
+      li
+        a(href="/logs/#{locals.parsed}") logs/#{locals.parsed} 
+
+

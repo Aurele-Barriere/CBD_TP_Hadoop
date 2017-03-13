@@ -1,0 +1,28 @@
+#################################
+#### Configuration of Hadoop ####
+#################################
+
+In order to have the right number of Map Tasks, we have to change the 
+parameter 'dfs.block.size' in the hdfs-site.xml file. 
+So, in order to have 10 Map Tasks for a file 100 MB, we set the parameter to
+(100 / 10) * 1024 *1024
+
+For the cluster capacity of some map tasks, we change the parameter 
+'mapred.tasktracker.map.tasks.maximum' in the mapred-site.xml file
+So, for a cluster capacity of 2 map tasks, we set the parameter to 2.
+
+For the slowstart, we change the parameter 'mapred.reduce.slowstart.completed.maps'
+in the file mapred-site.xml.
+So, in order to have a slowstart set to 50%, we set the parameter to 0.5.
+
+#################
+#### Results ####
+#################
+
+1. Execution time: 1 min 03 sec
+2. Execution time: 1 min 30 sec
+
+The second job is longer than the first one mostly because we use only a cluster capacity of
+one map task in this case. So, it runs twenty tasks one by one, but for the first case, 
+it runs ten tasks two by two, even if, in the first case, the map tasks are bigger (10 MB), 
+than in the second case (5 MB), it should be faster.

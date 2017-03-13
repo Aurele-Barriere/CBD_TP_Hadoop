@@ -1,0 +1,7 @@
+#This data is taken from the 20-05:Experiment 5 at every 10 iterations.
+#Approach #Energy(kJ) #Completion Time #Power #Energy(kJ) with 20  # Energy with 30
+TP 4233 1472 89 3019 2578
+DC(1) 2279 607 117 1903 1912
+DC(2) 2789 805 108 1977 2036
+DN(15:1) 2349 589 124 1860 1806
+DN(7:1) 1863 476 122 1777 1787

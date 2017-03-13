@@ -1,0 +1,4 @@
+.node rect:hover{
+  stroke: red;
+  stroke-width: 2px;
+}

@@ -1,0 +1,22 @@
+doctype html
+html(lang='en')
+  head
+    title=title
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/dc.css')
+    link(rel='stylesheet', href='/stylesheets/charts.css')
+    script(src='/javascripts/controllers.js')
+    script(src='/javascripts/d3.v3.min.js')
+    script(src='/javascripts/crossfilter.js')
+    script(src='/javascripts/dc.js')
+    
+  body
+    nav.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+      div.navbar-header
+        a.navbar-brand(href='#/index')= title
+        a.navbar-brand(href='/') Home
+        a.navbar-brand(href='/logs') Logs
+
+    .container
+      block content

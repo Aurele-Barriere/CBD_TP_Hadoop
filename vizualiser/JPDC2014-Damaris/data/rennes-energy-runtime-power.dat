@@ -1,0 +1,7 @@
+#Every 10 iteration for output freq. : 19-05 exp4
+#Approach #Energy(kJ) #Completion Time #Power
+TP 15782 4501 219
+DC(1) 3547 823 269
+DC(2) 4441 1041 267
+DN(15:1) 5783 1346 269
+DN(7:1) 4725 1118 264

@@ -1,0 +1,40 @@
+<simulation name="my_simulation" language="c" 
+    xmlns="http://damaris.gforge.inria.fr/damaris/model">
+    <architecture>
+      <domains count="1"/>
+      <dedicated cores="1"/>
+      <buffer name="the_buffer" size="67108864" />
+      <queue  name="the_queue"  size="100" />
+    </architecture>
+    <data>
+        <parameter name="w" type="int" value="4" />
+        <parameter name="h" type="int" value="4" />
+        <parameter name="d" type="int" value="4" />
+
+        <layout name="mesh_x_layout" type="float" dimensions="w" />
+        <layout name="mesh_y_layout" type="float" dimensions="h" />
+        <layout name="mesh_z_layout" type="float" dimensions="d" />
+        
+        <layout name="data_layout" type="double" dimensions="w,h,d"/>
+
+        <mesh name="mesh3d" type="rectilinear" topology="3">
+            <coord name="coordinates/x3d" unit="m" label="Width"/>
+            <coord name="coordinates/y3d" unit="m" label="Height"/>
+            <coord name="coordinates/z3d" unit="m" label="Depth"/>
+        </mesh>
+
+        <group name="coordinates">
+            <variable name="x3d" layout="mesh_x_layout" 
+                visualizable="false"  time-varying="false" />
+            <variable name="y3d" layout="mesh_y_layout" 
+                visualizable="false"  time-varying="false" />
+            <variable name="z3d" layout="mesh_z_layout" 
+                visualizable="false"  time-varying="false" />
+        </group>
+        
+        <variable name="temperature" layout="data_layout" mesh="mesh3d"/>
+    </data>
+    <actions>
+      <event name="my_event" action="my_function" using="my_plugin.so" />
+    </actions>
+</simulation>

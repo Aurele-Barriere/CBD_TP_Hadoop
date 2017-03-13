@@ -1,0 +1,97 @@
+extends layout
+
+block content 
+  
+  h1 #{locals.parsed}
+
+  .div(id="alert")
+  .row
+    .div(id="tasksdistribution-chart")
+      .div
+        a(class="reset", href="javascript:tasksdistributionChart.filterAll();dc.redrawAll();", style="display: none;") reset
+
+  script(src="/javascripts/tasks.js")
+  script.
+    d3.json("/json/jobs/#{locals.parsed}", function(error,data) {
+      if (error){
+        document.getElementById("#alert").innerHTML = "no data available (yet ?)";
+        return console.warn(error);
+      }
+
+      globaldata = data;
+
+
+      mapAttempttasks = Object.keys(globaldata.MapAttempt).map(function(key) {
+            return globaldata.MapAttempt[key];
+      });
+
+      reduceAttempttasks = Object.keys(globaldata.ReduceAttempt).map(function(key) {
+            return globaldata.ReduceAttempt[key];
+      });
+
+      taskAttempts = mapAttempttasks.concat(reduceAttempttasks);
+
+      tasks = Object.keys(globaldata.Task).map(function(key) {
+            return globaldata.Task[key];
+      });
+
+      // taskId -> [split0, split1, split2] (denormalization)
+      splitGroups = tasks.reduce(function(p,c){
+        var splits = c.SPLITS;
+        if (typeof splits == "undefined" || splits === "") {
+          return p;  
+        }
+        var splita = splits.split(',');
+
+        var d = splita.map(function(s){
+          var tJson = JSON.stringify(c);
+          var addJson = JSON.stringify({'SPLIT_HOSTNAME': s.replace(/\/.*\//, "").replace(/\\/g, ""), 'SPLIT_STATUS': 'UNUSED'});
+          var value = JSON.parse(tJson.substr(0,tJson.length-1) + "," + addJson.substr(1));
+          return value;
+        });
+        p[c.TASKID] = d;
+        return p;
+        }
+      , {});
+
+      // adjust status to tasks and add non local...
+      for (var i in taskAttempts) {
+        var taskattempt = taskAttempts[i];
+        var taskid = taskattempt.TASKID;
+        var splits = splitGroups[taskid];
+        if (typeof splits == "undefined") {
+          continue
+        }
+        var selected = splits.filter(function(d){return d.SPLIT_HOSTNAME === taskattempt.HOSTNAME.replace(/\/.*\//, "").replace(/\\/g, "")});
+        if (selected.length == 1) {
+          selected[0].SPLIT_STATUS = "LOCAL";
+        }
+        else if (selected.length == 0) {
+          selected = taskattempt;
+          selected.SPLIT_HOSTNAME = taskattempt.HOSTNAME.replace(/\/.*\//, "").replace(/\\/g, "");
+          selected.SPLIT_STATUS = 'NONLOCAL' ;
+          splits.push(selected);
+        }
+        else {
+          console.err("Not possible");
+        }
+      }
+
+      allSplits = Object.keys(splitGroups).map(function(key) {
+        return splitGroups[key];
+      }).reduce(function(p,c){
+        p = p.concat(c);
+        return p;
+      }
+      ,[]);
+
+      var sortByHostname = crossfilter.quicksort.by(function(d){return d.TASKID});
+      sortByHostname(allSplits, 0 , allSplits.length -1);
+
+      ndx = crossfilter(allSplits);
+
+      taskDistributionChart = dc.rectChart("#tasksdistribution-chart")
+      render_tasks_distribution(taskDistributionChart, allSplits, ndx);
+
+      dc.renderAll();
+    });
