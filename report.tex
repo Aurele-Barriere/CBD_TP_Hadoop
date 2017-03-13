@@ -1,14 +1,30 @@
 \documentclass{article}
+\usepackage{fullpage} 
 
+\def\file#1{\texttt{#1}}
+\def\bench#1{\texttt{#1}}
+\def\code#1{\texttt{#1}}
 
 
 \author{Aur\`ele Barri\`ere \& Benjamin Fasquelle}
 \title{Practical Evaluation}
+\date{March 24, 2017}
 
 \begin{document}
 \maketitle
 
 \section*{Question 1.1}
+To evaluate the usefulness of speculation in a stressed environment, we run several jobs with the same configuration and the same data, the only change being the activation of the speculative execution.
+
+In each job, we are going to stress one of the 5 nodes. In this purpose, we used a script to stress the disk (see in Annex [?]).
+
+We used the benchmark \bench{sort} with a block size of 128MB, a replication factor of 3 and 8 map/reduce slots.
+
+In the first two runs, we disable the speculation (speculative execution in \file{mapred-site.xml}).
+In the next two runs, we enable the speculation.
+
+%to be continued
+
 
 \section*{Question 1.2}
 
@@ -16,7 +32,8 @@
 
 \section*{Question 3.1}
 
-
+\section*{Annex}
+% put the script for disk stress
 
 
 \end{document}
