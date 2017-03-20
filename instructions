@@ -84,11 +84,11 @@ then
 
 bin/hadoop jar hadoop-examples*.jar sort 10g sort005
 time bin/hadoop jar hadoop-examples*.jar wordcount 10g wc005
-change expiry
+change slowstart
 stop start
 bin/hadoop jar hadoop-examples*.jar sort 10g sort05
 time bin/hadoop jar hadoop-examples*.jar wordcount 10g wc05
-change expiry
+change slowstart
 stop start
 bin/hadoop jar hadoop-examples*.jar sort 10g sort1
 time bin/hadoop jar hadoop-examples*.jar wordcount 10g wc1
@@ -112,17 +112,17 @@ bin/hadoop jar hadoop-examples-*.jar randomwriter -Dtest.randomwrite.total_bytes
 
 
 script: 3.1.sh
-bin/hadoop jar hadoop-examples*.jar sort 2g 1
+bin/hadoop jar hadoop-examples*.jar sort 10g 1
 sleep 10
-bin/hadoop jar hadoop-examples*.jar sort 2g 2
+bin/hadoop jar hadoop-examples*.jar sort 4g 2
 sleep 10
-bin/hadoop jar hadoop-examples*.jar sort 2g 3
+bin/hadoop jar hadoop-examples*.jar sort 4g 3
 sleep 10
-bin/hadoop jar hadoop-examples*.jar sort 4g 4
+bin/hadoop jar hadoop-examples*.jar sort 2g 4
 sleep 10
-bin/hadoop jar hadoop-examples*.jar sort 4g 5
+bin/hadoop jar hadoop-examples*.jar sort 2g 5
 sleep 10
-bin/hadoop jar hadoop-examples*.jar sort 10g 6
+bin/hadoop jar hadoop-examples*.jar sort 2g 6
 
 bin/hadoop fs -rmr 1
 bin/hadoop fs -rmr 2
