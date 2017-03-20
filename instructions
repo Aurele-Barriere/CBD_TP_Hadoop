@@ -1,0 +1,138 @@
+1.1
+
+master is parapide-1
+15 nodes
+
+sh hadoopens.sh
+
+set blocksize to 134217728 in hdfs-site.xml
+
+set replication factor to 3 in hdfs-site.xml
+
+set map tasks to 3 in mapred-site.xml
+
+see that there is no speculation in mapred-site.xml
+
+
+bin/stop-all.sh
+bin/start-all.sh
+
+script to stress in parapluie-9: stress.sh
+#!/bin/bash
+count=2
+while [ $count -eq 2 ]
+do
+sleep 1
+rm /tmp/temp.bin
+dd if=/dev/zero of=/tmp/temp.bin bs=10G count=1
+done
+
+to be launched on one node
+
+
+bin/hadoop jar hadoop-examples*.jar sort 20g sort20nospec
+
+
+set speculation in mapred-site.xml
+<property>
+<name>mapred.map.tasks.speculative.execution</name>
+<value>true</value>
+</property>
+<property>
+<name>mapred.reduce.tasks.speculative.execution</name>
+<value>true</value>
+</property>
+
+
+bin/stop-all.sh
+bin/start-all.sh
+
+bin/hadoop jar hadoop-examples*.jar sort 20g sort20spec
+
+1.2
+
+set expiry interval in mapred-site.xml
+<property>
+<name>mapred.tasktracker.expiry.interval</name>
+<value>30000</value>
+</property>
+
+bin/hadoop jar hadoop-examples*.jar sort 20g sort30b
+stop and start
+bin/hadoop jar hadoop-examples*.jar sort 20g sort30a
+
+change expiry then
+
+bin/hadoop jar hadoop-examples*.jar sort 20g sort60b
+stop and start
+bin/hadoop jar hadoop-examples*.jar sort 20g sort60a
+
+
+
+2.1
+
+bin/hadoop jar hadoop-examples-*.jar randomwriter -Dtest.randomwrite.total_bytes=10737418240 10g
+
+change slowstart in mapred-site.xml
+
+<property>
+<name>mapred.reduce.slowstart.completed.maps</name>
+<value>0.05</value>
+</property>
+
+then 
+
+bin/hadoop jar hadoop-examples*.jar sort 10g sort005
+time bin/hadoop jar hadoop-examples*.jar wordcount 10g wc005
+change expiry
+stop start
+bin/hadoop jar hadoop-examples*.jar sort 10g sort05
+time bin/hadoop jar hadoop-examples*.jar wordcount 10g wc05
+change expiry
+stop start
+bin/hadoop jar hadoop-examples*.jar sort 10g sort1
+time bin/hadoop jar hadoop-examples*.jar wordcount 10g wc1
+
+3.1
+change fair scheduler in mapred-site.xml
+<property>
+<name>mapred.jobtracker.taskScheduler</name>
+<value>org.apache.hadoop.mapred.FairScheduler</value>
+</property>
+
+change preemption in mapred-site.xml
+<property>
+<name>mapred.fairscheduler.preemption</name>
+<value>true</value>
+</property>
+
+bin/hadoop jar hadoop-examples-*.jar randomwriter -Dtest.randomwrite.total_bytes=2147483648 2g
+bin/hadoop jar hadoop-examples-*.jar randomwriter -Dtest.randomwrite.total_bytes=4294967296 4g
+
+
+
+script: 3.1.sh
+bin/hadoop jar hadoop-examples*.jar sort 2g 1
+sleep 10
+bin/hadoop jar hadoop-examples*.jar sort 2g 2
+sleep 10
+bin/hadoop jar hadoop-examples*.jar sort 2g 3
+sleep 10
+bin/hadoop jar hadoop-examples*.jar sort 4g 4
+sleep 10
+bin/hadoop jar hadoop-examples*.jar sort 4g 5
+sleep 10
+bin/hadoop jar hadoop-examples*.jar sort 10g 6
+
+bin/hadoop fs -rmr 1
+bin/hadoop fs -rmr 2
+bin/hadoop fs -rmr 3
+bin/hadoop fs -rmr 4
+bin/hadoop fs -rmr 5
+bin/hadoop fs -rmr 6
+
+add fair scheduler, then stop/start, then 
+relaunch the script
+
+add preemption, stop/start, then
+relaunch the script
