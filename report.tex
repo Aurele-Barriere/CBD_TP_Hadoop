@@ -8,7 +8,11 @@
 \begin{document}
 \maketitle
 
+These experiments were done on 15 nodes.
+
 \section*{Question 1.1}
+
+We used a data set of 20GB, with replication factor
 
 \section*{Question 1.2}
 
@@ -20,3 +24,43 @@
 
 
 \end{document}
+
+1.1
+Without speculation:
+
+Time:
+
+Average map time:
+Average reduce time:
+Max map time:
+Max reduce time:
+
+
+With speculation:
+
+Time:
+
+Average map time:
+Average reduce time:
+Max map time:
+Max reduce time:
+
+Number of speculative copies:
+
+
+1.2
+Expiry 30, kill before completion:
+Execution time:
+Number of killed tasks:
+
+Expiry 30, kill after completion:
+Execution time:
+Number of killed tasks:
+
+Expiry 60, kill before completion:
+Execution time:
+Number of killed tasks:
+
+Expiry 60, kill after completion:
+Execution time:
+Number of killed tasks:
