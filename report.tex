@@ -14,6 +14,8 @@ These experiments were done on 15 nodes.
 
 We used a data set of 20GB, with replication factor
 
+Speculative tasks have lower priority.
+
 \section*{Question 1.2}
 
 We used a data set of 20GB and run sort benchmark using block size at 128MB and the replication factor at 3.
@@ -72,7 +74,11 @@ The next table shows the execution times.
 \end{tabular}
 \end{center}
 
+For the sort benchmarks, we can see that the time taken by Map tasks is the same for all the values (3sec in average, 7 at worst).
+However, the time taken by Shuffle decrease when the value increase: in average, it is 15sec for 0.05 (18 at worst), 12sec for 0.5 (17 at worst) and 11sec for 1 (14 at worst). For the time taken by Reduce tasks, it's more quickly with the value at 0.5: it is 7sec in average (11 at worst), against 11sec for 0.05 (17 at worst) and 10sec for 1 (14 at worst).
+We can observe that if we want to reduce the global execution time, we can increase the value, that is reduce the Shuffle time, but the Reduce time is lower for the value at 0.5.
 
+For the Wordcount benchmarks, we can see the same thing for the Map time and the Shuffle time, but for the Reduce time, it decrease when the value increase: on average, it is 4minutes and 26sec for 0.05 (4mins, 45sec at worst), 3minutes and 46sec for 0.05 (4mins, 15sec at worst) and 3minutes and 40sec for 1 (3mins, 59sec at worst).
 
 \section*{Question 3.1}
 
@@ -80,12 +86,34 @@ The next table shows the execution times.
 We run 6 sort applications on different sizes (3*2GB, 2*4GB 1*10GB) under Fifo scheduler, Fair scheduler (preemption disabled), and Fair scheduler
 (preemption enabled) (we used Fair scheduler within the pool).
 
-
-
-Jobs are launched with a decreasing input size order and 10 second interval between two
+Jobs were launched with a decreasing input size order and 10 second interval between two
 jobs.
-See the execution time, data locality and the waiting time of the applications. what can
-you observe?
+
+%See the execution time, data locality and the waiting time of the applications. what can
+%you observe?
+
+The next table shows the execution times.
+
+\begin{center}
+\captionof{table}{Execution times} 
+\begin{tabular}{|c|c|c|c|}
+\hline
+\ & Fifo & Fair & Fair with preemption \\
+\hline
+10GB & 36sec & 31sec & 31sec \\
+\hline
+4GB & 36sec & 30sec & 30sec \\
+\hline
+4GB & 38sec & 28sec & 31sec \\
+\hline
+2GB & 48sec & 46sec & 36sec \\
+\hline
+2GB & 53sec & 52sec & 37sec \\
+\hline
+2GB & 1mins, 17sec & 1mins, 13sec & 1mins, 11sec \\
+\hline
+\end{tabular}
+\end{center}
 
 
 \end{document}
