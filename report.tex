@@ -1,7 +1,7 @@
 \documentclass{article}
 
 
-
+\usepackage{caption}
 \author{Aur\`ele Barri\`ere \& Benjamin Fasquelle}
 \title{Practical Evaluation}
 
@@ -16,11 +16,76 @@ We used a data set of 20GB, with replication factor
 
 \section*{Question 1.2}
 
+We used a data set of 20GB and run sort benchmark using block size at 128MB and the replication factor at 3.
+
+We execute runs with different expiry interval (30seconds and 1 minutes), and stop the tasktracker daemon on one node (one time before the completion of the map tasks, another after this completion).
+
+The next tables show the execution times and the number of killed tasks respectively.
+
+\begin{center}
+\captionof{table}{Execution times} 
+\begin{tabular}{|c|c|c|}
+\hline
+\ & expiry interval: 30seconds & expiry interval: 1minutes \\
+\hline
+Before completion map & 8mins, 58sec & 14mins, 3sec \\
+\hline
+After completion map & 14mins, 41sec & 12mins, 27sec\\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\captionof{table}{Number of killed tasks} 
+\begin{tabular}{|c|c|c|}
+\hline
+\ & expiry interval: 30seconds & expiry interval: 1minutes \\
+\hline
+Before completion map & 4 & 11 \\
+\hline
+After completion map & 21 & 13 \\
+\hline
+\end{tabular}
+\end{center}
+
+
 \section*{Question 2.1}
+
+
+We used a data set of 10GB and run wordcount and sort benchmarks using
+different values (0.05, 0.5, and 1).
+
+The next table shows the execution times.
+
+\begin{center}
+\captionof{table}{Execution times} 
+\begin{tabular}{|c|c|c|}
+\hline
+\ & Sort & Wordcount \\
+\hline
+0.05 & 1mins, 2sec & 6mins, 55sec \\
+\hline
+0.5 & 1mins, 19sec & 6mins, 36sec \\
+\hline
+1 & 1mins, 7sec & 6mins, 52sec \\
+\hline
+\end{tabular}
+\end{center}
+
+
 
 \section*{Question 3.1}
 
 
+We run 6 sort applications on different sizes (3*2GB, 2*4GB 1*10GB) under Fifo scheduler, Fair scheduler (preemption disabled), and Fair scheduler
+(preemption enabled) (we used Fair scheduler within the pool).
+
+
+
+Jobs are launched with a decreasing input size order and 10 second interval between two
+jobs.
+See the execution time, data locality and the waiting time of the applications. what can
+you observe?
 
 
 \end{document}
