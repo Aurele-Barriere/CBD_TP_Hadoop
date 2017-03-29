@@ -13,12 +13,14 @@
 \begin{document}
 \maketitle
 
-These experiments were done on 15 nodes.
+Except for question 1.1 (on 5 nodes), these experiments were done on 15 nodes. The log files will be sent with the report.
+
+It would have been better to have several measures for each experiments, so our conclusions
 
 \section*{Question 1.1}
 To evaluate the usefulness of speculation in a stressed environment, we run several jobs with the same configuration and the same data, the only change being the activation of the speculative execution.
 
-In each job, we are going to stress one of the 5 nodes. In this purpose, we used a script to stress the disk (see in Annex [?]).
+In each job, we are going to stress one of the 5 nodes. In this purpose, we used a script to stress the disk (see in Annex [?]) on only one node.
 
 We used the benchmark \bench{sort} with a block size of 128MB, a replication factor of 3 and 8 map/reduce slots.
 
@@ -28,7 +30,7 @@ In the next two runs, we enable the speculation.
 %to be continued
 
 
-We used a data set of 20GB, with replication factor
+We used a data set of 20GB, with replication factor 3.
 
 Speculative tasks have lower priority.
 
@@ -44,7 +46,7 @@ The next tables show the execution times and the number of killed tasks respecti
 \captionof{table}{Execution times} 
 \begin{tabular}{|c|c|c|}
 \hline
-\ & expiry interval: 30seconds & expiry interval: 1minutes \\
+\ & expiry interval: 30 seconds & expiry interval: 1 minute \\
 \hline
 Before completion map & 8mins, 58sec & 14mins, 3sec \\
 \hline
@@ -57,7 +59,7 @@ After completion map & 14mins, 41sec & 12mins, 27sec\\
 \captionof{table}{Number of killed tasks} 
 \begin{tabular}{|c|c|c|}
 \hline
-\ & expiry interval: 30seconds & expiry interval: 1minutes \\
+\ & expiry interval: 30 seconds & expiry interval: 1 minute \\
 \hline
 Before completion map & 4 & 11 \\
 \hline
@@ -66,12 +68,14 @@ After completion map & 21 & 13 \\
 \end{tabular}
 \end{center}
 
+I'm not really sure how to interpret this result.
 
 \section*{Question 2.1}
 
 
 We used a data set of 10GB and run wordcount and sort benchmarks using
-different values (0.05, 0.5, and 1).
+different values (0.05, 0.5, and 1) of slowstart.
+It means that the reduce phase will only start of some percentage of the map phase is done (5\%, 50\% or 100\%).
 
 The next table shows the execution times.
 
@@ -92,9 +96,11 @@ The next table shows the execution times.
 
 For the sort benchmarks, we can see that the time taken by Map tasks is the same for all the values (3sec in average, 7 at worst).
 However, the time taken by Shuffle decrease when the value increase: in average, it is 15sec for 0.05 (18 at worst), 12sec for 0.5 (17 at worst) and 11sec for 1 (14 at worst). For the time taken by Reduce tasks, it's more quickly with the value at 0.5: it is 7sec in average (11 at worst), against 11sec for 0.05 (17 at worst) and 10sec for 1 (14 at worst).
-We can observe that if we want to reduce the global execution time, we can increase the value, that is reduce the Shuffle time, but the Reduce time is lower for the value at 0.5.
+%We can observe that if we want to reduce the global execution time, we can increase the value, that is reduce the Shuffle time, but the Reduce time is lower for the value at 0.5.
 
-For the Wordcount benchmarks, we can see the same thing for the Map time and the Shuffle time, but for the Reduce time, it decrease when the value increase: on average, it is 4minutes and 26sec for 0.05 (4mins, 45sec at worst), 3minutes and 46sec for 0.05 (4mins, 15sec at worst) and 3minutes and 40sec for 1 (3mins, 59sec at worst).
+For the Wordcount benchmarks, we can see the same thing for the Map time and the Shuffle time, but for the Reduce time, it decreases when the value of slowstart increases: on average, it is 4minutes and 26sec for 0.05 (4mins, 45sec at worst), 3minutes and 46sec for 0.05 (4mins, 15sec at worst) and 3minutes and 40sec for 1 (3mins, 59sec at worst).
+
+In the Wordcount example, the reduce phase does not benefit from starting early, because the reduce nodes need data from all of the map and shuffle nodes. Launching reduce jobs too early might use some resource that wasn't needed. 
 
 \section*{Question 3.1}
 
@@ -133,46 +139,7 @@ The next table shows the execution times.
 \end{tabular}
 \end{center}
 
+Fair scheduler can be bad for data locality.
+
 
 \end{document}
-
-1.1
-Without speculation:
-
-Time:
-
-Average map time:
-Average reduce time:
-Max map time:
-Max reduce time:
-
-
-With speculation:
-
-Time:
-
-Average map time:
-Average reduce time:
-Max map time:
-Max reduce time:
-
-Number of speculative copies:
-
-
-1.2
-Expiry 30, kill before completion:
-Execution time:
-Number of killed tasks:
-
-Expiry 30, kill after completion:
-Execution time:
-Number of killed tasks:
-
-Expiry 60, kill before completion:
-Execution time:
-Number of killed tasks:
-
-Expiry 60, kill after completion:
-Execution time:
-Number of killed tasks:
-
