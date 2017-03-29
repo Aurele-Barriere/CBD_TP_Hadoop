@@ -1,5 +1,6 @@
 \documentclass{article}
-\usepackage{fullpage} 
+\usepackage{fullpage}
+\usepackage{graphicx}
 
 \def\file#1{\texttt{#1}}
 \def\bench#1{\texttt{#1}}
@@ -29,10 +30,42 @@ In the next two runs, we enable the speculation.
 
 %to be continued
 
-
 We used a data set of 20GB, with replication factor 3.
 
-Speculative tasks have lower priority.
+Some results are presented in the Table 1.
+
+\begin{center}
+\captionof{table}{Measurement}
+\begin{tabular}{|c|c|c|}
+\hline
+\ & Without speculation & With speculation \\
+\hline
+Execution time & 5mins, 55sec & 6mins, 58sec \\
+\hline
+Number of speculatives copies & 0 & 4 \\
+\hline
+Average Map runtime & 3sec & 5sec \\
+\hline
+Maximum Map runtime & 5sec & 11sec \\
+\hline
+Average Reduce runtime & 1mins, 48sec & 2mins, 4sec \\
+\hline
+Maximum Reduce runtime & 2mins, 18sec & 2mins, 40sec \\
+\hline
+\end{tabular}
+\end{center}
+
+
+
+Speculative tasks have lower priority, thus we can see on Figure (\ref{spec_prio}) that they are executed at the end (tasks in red).
+
+\begin{figure}%[h!]
+  \centering
+  \includegraphics[width=0.6\textwidth]{spec.png}
+  \caption{Executions of the tasks with speculation}
+  \label{spec_prio}
+\end{figure}
+
 
 \section*{Question 1.2}
 
@@ -124,17 +157,17 @@ The next table shows the execution times.
 \hline
 \ & Fifo & Fair & Fair with preemption \\
 \hline
-10GB & 36sec & 31sec & 31sec \\
+2GB & 36sec & 31sec & 31sec \\
 \hline
-4GB & 36sec & 30sec & 30sec \\
+2GB & 36sec & 30sec & 30sec \\
 \hline
-4GB & 38sec & 28sec & 31sec \\
+2GB & 38sec & 28sec & 31sec \\
 \hline
-2GB & 48sec & 46sec & 36sec \\
+4GB & 48sec & 46sec & 36sec \\
 \hline
-2GB & 53sec & 52sec & 37sec \\
+4GB & 53sec & 52sec & 37sec \\
 \hline
-2GB & 1mins, 17sec & 1mins, 13sec & 1mins, 11sec \\
+10GB & 1mins, 17sec & 1mins, 13sec & 1mins, 11sec \\
 \hline
 \end{tabular}
 \end{center}
