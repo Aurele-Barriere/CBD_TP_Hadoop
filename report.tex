@@ -5,13 +5,15 @@
 \def\bench#1{\texttt{#1}}
 \def\code#1{\texttt{#1}}
 
-
+\usepackage{caption}
 \author{Aur\`ele Barri\`ere \& Benjamin Fasquelle}
 \title{Practical Evaluation}
 \date{March 24, 2017}
 
 \begin{document}
 \maketitle
+
+These experiments were done on 15 nodes.
 
 \section*{Question 1.1}
 To evaluate the usefulness of speculation in a stressed environment, we run several jobs with the same configuration and the same data, the only change being the activation of the speculative execution.
@@ -26,14 +28,151 @@ In the next two runs, we enable the speculation.
 %to be continued
 
 
+We used a data set of 20GB, with replication factor
+
+Speculative tasks have lower priority.
+
 \section*{Question 1.2}
 
+We used a data set of 20GB and run sort benchmark using block size at 128MB and the replication factor at 3.
+
+We execute runs with different expiry interval (30seconds and 1 minutes), and stop the tasktracker daemon on one node (one time before the completion of the map tasks, another after this completion).
+
+The next tables show the execution times and the number of killed tasks respectively.
+
+\begin{center}
+\captionof{table}{Execution times} 
+\begin{tabular}{|c|c|c|}
+\hline
+\ & expiry interval: 30seconds & expiry interval: 1minutes \\
+\hline
+Before completion map & 8mins, 58sec & 14mins, 3sec \\
+\hline
+After completion map & 14mins, 41sec & 12mins, 27sec\\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\captionof{table}{Number of killed tasks} 
+\begin{tabular}{|c|c|c|}
+\hline
+\ & expiry interval: 30seconds & expiry interval: 1minutes \\
+\hline
+Before completion map & 4 & 11 \\
+\hline
+After completion map & 21 & 13 \\
+\hline
+\end{tabular}
+\end{center}
+
+
 \section*{Question 2.1}
+
+
+We used a data set of 10GB and run wordcount and sort benchmarks using
+different values (0.05, 0.5, and 1).
+
+The next table shows the execution times.
+
+\begin{center}
+\captionof{table}{Execution times} 
+\begin{tabular}{|c|c|c|}
+\hline
+\ & Sort & Wordcount \\
+\hline
+0.05 & 1mins, 2sec & 6mins, 55sec \\
+\hline
+0.5 & 1mins, 19sec & 6mins, 36sec \\
+\hline
+1 & 1mins, 7sec & 6mins, 52sec \\
+\hline
+\end{tabular}
+\end{center}
+
+For the sort benchmarks, we can see that the time taken by Map tasks is the same for all the values (3sec in average, 7 at worst).
+However, the time taken by Shuffle decrease when the value increase: in average, it is 15sec for 0.05 (18 at worst), 12sec for 0.5 (17 at worst) and 11sec for 1 (14 at worst). For the time taken by Reduce tasks, it's more quickly with the value at 0.5: it is 7sec in average (11 at worst), against 11sec for 0.05 (17 at worst) and 10sec for 1 (14 at worst).
+We can observe that if we want to reduce the global execution time, we can increase the value, that is reduce the Shuffle time, but the Reduce time is lower for the value at 0.5.
+
+For the Wordcount benchmarks, we can see the same thing for the Map time and the Shuffle time, but for the Reduce time, it decrease when the value increase: on average, it is 4minutes and 26sec for 0.05 (4mins, 45sec at worst), 3minutes and 46sec for 0.05 (4mins, 15sec at worst) and 3minutes and 40sec for 1 (3mins, 59sec at worst).
 
 \section*{Question 3.1}
 
 \section*{Annex}
 % put the script for disk stress
 
+We run 6 sort applications on different sizes (3*2GB, 2*4GB 1*10GB) under Fifo scheduler, Fair scheduler (preemption disabled), and Fair scheduler
+(preemption enabled) (we used Fair scheduler within the pool).
+
+Jobs were launched with a decreasing input size order and 10 second interval between two
+jobs.
+
+%See the execution time, data locality and the waiting time of the applications. what can
+%you observe?
+
+The next table shows the execution times.
+
+\begin{center}
+\captionof{table}{Execution times} 
+\begin{tabular}{|c|c|c|c|}
+\hline
+\ & Fifo & Fair & Fair with preemption \\
+\hline
+10GB & 36sec & 31sec & 31sec \\
+\hline
+4GB & 36sec & 30sec & 30sec \\
+\hline
+4GB & 38sec & 28sec & 31sec \\
+\hline
+2GB & 48sec & 46sec & 36sec \\
+\hline
+2GB & 53sec & 52sec & 37sec \\
+\hline
+2GB & 1mins, 17sec & 1mins, 13sec & 1mins, 11sec \\
+\hline
+\end{tabular}
+\end{center}
+
 
 \end{document}
+
+1.1
+Without speculation:
+
+Time:
+
+Average map time:
+Average reduce time:
+Max map time:
+Max reduce time:
+
+
+With speculation:
+
+Time:
+
+Average map time:
+Average reduce time:
+Max map time:
+Max reduce time:
+
+Number of speculative copies:
+
+
+1.2
+Expiry 30, kill before completion:
+Execution time:
+Number of killed tasks:
+
+Expiry 30, kill after completion:
+Execution time:
+Number of killed tasks:
+
+Expiry 60, kill before completion:
+Execution time:
+Number of killed tasks:
+
+Expiry 60, kill after completion:
+Execution time:
+Number of killed tasks:
+
