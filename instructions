@@ -3,6 +3,9 @@
 master is parapide-1
 15 nodes
 
+master is parapide-18.
+5 nodes: 18, 20, 21, 23, 25
+
 sh hadoopens.sh
 
 set blocksize to 134217728 in hdfs-site.xml
@@ -13,6 +16,7 @@ set map tasks to 3 in mapred-site.xml
 
 see that there is no speculation in mapred-site.xml
 
+bin/hadoop jar hadoop-examples-*.jar randomwriter -Dtest.randomwrite.total_bytes=21474836480 20g
 
 bin/stop-all.sh
 bin/start-all.sh
