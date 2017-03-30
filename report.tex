@@ -14,7 +14,7 @@
 \begin{document}
 \maketitle
 
-Except for question 1.1 (on 5 nodes), these experiments were done on 15 nodes. The log files will be sent with the report.
+Except for question 1.1 (on 5 nodes), these experiments were done on 15 nodes.
 
 It would have been better to have several measures for each experiments. With our experiments, we cannot deduce that some strategy will always be better than another one. However, it can show that there are some cases in which some strategy can be better.
 
@@ -144,7 +144,7 @@ The next table shows the execution times.
 \end{center}
 
 For the sort benchmarks, we can see that the time taken by Map tasks is the same for all the values (3sec in average, 7 at worst).
-However, the time taken by Shuffle decrease when the value increase: in average, it is 15sec for 0.05 (18 at worst), 12sec for 0.5 (17 at worst) and 11sec for 1 (14 at worst). For the time taken by Reduce tasks, it's more quickly with the value at 0.5: it is 7sec in average (11 at worst), against 11sec for 0.05 (17 at worst) and 10sec for 1 (14 at worst).
+However, the time taken by Shuffle decreases when the value increases: in average, it is 15sec for 0.05 (18 at worst), 12sec for 0.5 (17 at worst) and 11sec for 1 (14 at worst). For the time taken by Reduce tasks, it's more quickly with the slowstart at 0.5: it is 7sec in average (11 at worst), against 11sec for 0.05 (17 at worst) and 10sec for 1 (14 at worst).
 %We can observe that if we want to reduce the global execution time, we can increase the value, that is reduce the Shuffle time, but the Reduce time is lower for the value at 0.5.
 
 For the Wordcount benchmarks, we can see the same thing for the Map time and the Shuffle time, but for the Reduce time, it decreases when the value of slowstart increases: on average, it is 4 minutes and 26sec for 0.05 (4mins, 45 seconds at worst), 3 minutes and 46sec for 0.05 (4 minutes, 15 seconds at worst) and 3 minutes and 40sec for 1 (3 minutes, 59 seconds at worst).
@@ -167,7 +167,7 @@ It explains why there is no clear tendency in our experiments. Sometimes a slowe
   \label{values}
 \end{figure}
 
-We can see on Figure (\ref{values}) that the start of the Reduce tasks rely on the value, as expected.
+We can see on Figure (\ref{values}) that the start of the Reduce tasks depends on the value of slowstart, as expected.
 
 
 
