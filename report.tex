@@ -9,7 +9,7 @@
 \usepackage{caption}
 \author{Aur\`ele Barri\`ere \& Benjamin Fasquelle}
 \title{Practical Evaluation}
-\date{March 24, 2017}
+\date{March 31, 2017}
 
 \begin{document}
 \maketitle
@@ -42,7 +42,7 @@ Some results are presented in the Table 1.
 \hline
 Execution time & 5mins, 55sec & 6mins, 58sec \\
 \hline
-Number of speculatives copies & 0 & 4 \\
+Number of speculative copies & 0 & 4 \\
 \hline
 Average Map run time & 3sec & 5sec \\
 \hline
@@ -115,7 +115,7 @@ After completion map & 21 & 13 \\
 \end{figure}
 
 
-First, we can see that increasing the expiry time can make the execution time longer. Indeed, for every failed node, the master node will detect it less qickly, and then the backup tasks will be launched much later. However, in our experiments, it does not always increase the execution time.
+First, we can see that increasing the expiry time can make the execution time longer. Indeed, for every failed node, the master node will detect it less quickly, and then the backup tasks will be launched much later. However, in our experiments, it does not always increase the execution time.
 
 We can also see that there are more killed tasks when we kill the tasktracker after the completion of the map tasks. Indeed, when a node is killed, we looses both the map results that he had and the work he had done on the reduce phase. When we killed the tasktracker after the end of the map tasks, we actually saw the percentage of map completion go backward, because some map tasks had to be done again.
 
