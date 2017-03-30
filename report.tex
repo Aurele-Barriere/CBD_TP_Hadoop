@@ -16,7 +16,7 @@
 
 Except for question 1.1 (on 5 nodes), these experiments were done on 15 nodes. The log files will be sent with the report.
 
-It would have been better to have several measures for each experiments, so our conclusions
+It would have been better to have several measures for each experiments. With our experiments, we cannot deduce that some strategy will always be better than another one. However, it can show that there are some cases in which some strategy can be better.
 
 \section*{Question 1.1}
 To evaluate the usefulness of speculation in a stressed environment, we run several jobs with the same configuration and the same data, the only change being the activation of the speculative execution.
@@ -67,6 +67,10 @@ Speculative tasks have lower priority, thus we can see on Figure (\ref{spec_prio
 \end{figure}
 
 
+It explains why speculative execution is not helpful in this case. Indeed, it should reduce the average and maximum time of the nodes. However, we can see here that speculative tasks are launched int the end and fail. Thus, they are not useful because they do not end sooner than stragglers. They even consume resources that could be used by other nodes to terminate faster.
+
+Thus, it shows that speculative execution is not always a better strategy to reduce execution time.
+
 \section*{Question 1.2}
 
 We used a data set of 20GB and run sort benchmark using block size at 128MB and the replication factor at 3.
@@ -101,7 +105,11 @@ After completion map & 21 & 13 \\
 \end{tabular}
 \end{center}
 
-I'm not really sure how to interpret this result.
+First, we can see that there are more killed tasks when we kill the tasktracker after the map completion.
+
+% I'm not sure what to say, I'm waiting for your picture
+
+
 
 \section*{Question 2.1}
 
@@ -133,7 +141,13 @@ However, the time taken by Shuffle decrease when the value increase: in average,
 
 For the Wordcount benchmarks, we can see the same thing for the Map time and the Shuffle time, but for the Reduce time, it decreases when the value of slowstart increases: on average, it is 4minutes and 26sec for 0.05 (4mins, 45sec at worst), 3minutes and 46sec for 0.05 (4mins, 15sec at worst) and 3minutes and 40sec for 1 (3mins, 59sec at worst).
 
-In the Wordcount example, the reduce phase does not benefit from starting early, because the reduce nodes need data from all of the map and shuffle nodes. Launching reduce jobs too early might use some resource that wasn't needed. 
+
+These executions times highlight the fact that a big slowstart can reduce the execution time as well as increase it, depending on the situation.
+With a quick start of the reduce nodes, you can sometimes have a better parallelization and start doing useful computations with your reduce nodes early.
+With a slower start, for applications that require the end of the map phase before starting the reduce phase (wordcount for instance), you won't benefit from starting the reduce phase early, and it will even use some resources that could have been used for the map phase.
+
+It explains why there is no clear tendency in our experiments. Sometimes a slower start is better, sometimes a quicker one is better. It also depends on the application. Wordcount has a less significative reduce phase than sort, and thus the difference in execution time is less visible.
+
 
 \section*{Question 3.1}
 
@@ -172,7 +186,12 @@ The next table shows the execution times.
 \end{tabular}
 \end{center}
 
-Fair scheduler can be bad for data locality.
+
+In this experiment, we see that using a Fair scheduler is better than Fifo. We know that Fair scheduling can hurt data locality, but here this disadvantage seems to be less significative than the gain in workload distribution.
+
+We can also see that preemption in Fair scheduling can reduce execution time a little. This is more obvious for larger data sizes, because for smaller data sizes there isn't enought time for preemption to be useful.
+
+
 
 
 \end{document}
