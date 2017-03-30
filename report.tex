@@ -163,8 +163,6 @@ In the Wordcount example, the reduce phase does not benefit from starting early,
 
 \section*{Question 3.1}
 
-\section*{Annex}
-% put the script for disk stress
 
 We run 6 sort applications on different sizes (3*2GB, 2*4GB 1*10GB) under Fifo scheduler, Fair scheduler (preemption disabled), and Fair scheduler
 (preemption enabled) (we used Fair scheduler within the pool).
@@ -199,6 +197,20 @@ The next table shows the execution times.
 \end{center}
 
 Fair scheduler can be bad for data locality.
+
+\begin{figure}%[h!]
+  \centering
+  \includegraphics[width=0.4\textwidth]{fifo2.png}
+  \includegraphics[width=0.4\textwidth]{fair2.png}
+  \includegraphics[width=0.4\textwidth]{fair_preemp2.png}
+  \caption{Last sort applications with Fifo (left), Fair without preemption (right) and Fair with preemption (below)}
+  \label{fair}
+\end{figure}
+
+
+
+\section*{Annex}
+% put the script for disk stress
 
 
 \end{document}
