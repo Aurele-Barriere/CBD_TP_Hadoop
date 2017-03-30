@@ -106,7 +106,7 @@ After completion map & 21 & 13 \\
   \centering
   \includegraphics[width=0.4\textwidth]{expiry1before.png}
   \includegraphics[width=0.4\textwidth]{expiry1after.png}
-  \caption{Tasktracker daemon stop before the completion of the map tasks (1minutes)}
+  \caption{Left: Tasktracker daemon stop before (left) and after (right) the completion of the map tasks (1minutes)}
   \label{kill}
 \end{figure}
 
@@ -146,6 +146,20 @@ However, the time taken by Shuffle decrease when the value increase: in average,
 For the Wordcount benchmarks, we can see the same thing for the Map time and the Shuffle time, but for the Reduce time, it decreases when the value of slowstart increases: on average, it is 4minutes and 26sec for 0.05 (4mins, 45sec at worst), 3minutes and 46sec for 0.05 (4mins, 15sec at worst) and 3minutes and 40sec for 1 (3mins, 59sec at worst).
 
 In the Wordcount example, the reduce phase does not benefit from starting early, because the reduce nodes need data from all of the map and shuffle nodes. Launching reduce jobs too early might use some resource that wasn't needed. 
+
+
+\begin{figure}%[h!]
+  \centering
+  \includegraphics[width=0.4\textwidth]{sort005.png}
+  \includegraphics[width=0.4\textwidth]{sort05.png}
+  \includegraphics[width=0.4\textwidth]{sort1.png}
+  \caption{Sort with value at 0.05 (left), 0.5 (right) and 1 (below)}
+  \label{values}
+\end{figure}
+
+
+
+
 
 \section*{Question 3.1}
 
