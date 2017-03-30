@@ -105,10 +105,19 @@ After completion map & 21 & 13 \\
 \end{tabular}
 \end{center}
 
-First, we can see that there are more killed tasks when we kill the tasktracker after the map completion.
 
-% I'm not sure what to say, I'm waiting for your picture
+\begin{figure}%[h!]
+  \centering
+  \includegraphics[width=0.4\textwidth]{expiry30before.png}
+  \includegraphics[width=0.4\textwidth]{expiry30after.png}
+  \caption{Left: Tasktracker daemon stop before (left) and after (right) the completion of the map tasks (30sec)}
+  \label{kill}
+\end{figure}
 
+
+
+
+I'm not really sure how to interpret this result.
 
 
 \section*{Question 2.1}
@@ -149,10 +158,22 @@ With a slower start, for applications that require the end of the map phase befo
 It explains why there is no clear tendency in our experiments. Sometimes a slower start is better, sometimes a quicker one is better. It also depends on the application. Wordcount has a less significative reduce phase than sort, and thus the difference in execution time is less visible.
 
 
+
+\begin{figure}%[h!]
+  \centering
+  \includegraphics[width=0.4\textwidth]{sort005.png}
+  \includegraphics[width=0.4\textwidth]{sort05.png}
+  \includegraphics[width=0.4\textwidth]{sort1.png}
+  \caption{Sort with value at 0.05 (left), 0.5 (right) and 1 (below)}
+  \label{values}
+\end{figure}
+
+
+
+
+
 \section*{Question 3.1}
 
-\section*{Annex}
-% put the script for disk stress
 
 We run 6 sort applications on different sizes (3*2GB, 2*4GB 1*10GB) under Fifo scheduler, Fair scheduler (preemption disabled), and Fair scheduler
 (preemption enabled) (we used Fair scheduler within the pool).
@@ -192,6 +213,20 @@ In this experiment, we see that using a Fair scheduler is better than Fifo. We k
 We can also see that preemption in Fair scheduling can reduce execution time a little. This is more obvious for larger data sizes, because for smaller data sizes there isn't enought time for preemption to be useful.
 
 
+
+\begin{figure}%[h!]
+  \centering
+  \includegraphics[width=0.4\textwidth]{fifo2.png}
+  \includegraphics[width=0.4\textwidth]{fair2.png}
+  \includegraphics[width=0.4\textwidth]{fair_preemp2.png}
+  \caption{Last sort applications with Fifo (left), Fair without preemption (right) and Fair with preemption (below)}
+  \label{fair}
+\end{figure}
+
+
+
+\section*{Annex}
+% put the script for disk stress
 
 
 \end{document}
