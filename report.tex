@@ -67,7 +67,7 @@ Speculative tasks have lower priority, thus we can see on Figure (\ref{spec_prio
 \end{figure}
 
 
-It explains why speculative execution is not helpful in this case. Indeed, it should reduce the average and maximum time of the nodes. However, we can see here that speculative tasks are launched int the end and fail. Thus, they are not useful because they do not end sooner than stragglers. They even consume resources that could be used by other nodes to terminate faster.
+It explains why speculative execution is not helpful in this case. Indeed, it should reduce the average and maximum time of the nodes. However, we can see here that speculative tasks are launched in the end and fail. Thus, they are not useful because they do not end sooner than stragglers. They even consume resources that could be used by other nodes to terminate faster.
 
 Thus, it shows that speculative execution is not always a better strategy to reduce execution time.
 
@@ -117,7 +117,7 @@ After completion map & 21 & 13 \\
 
 First, we can see that increasing the expiry time can make the execution time longer. Indeed, for every failed node, the master node will detect it less quickly, and then the backup tasks will be launched much later. However, in our experiments, it does not always increase the execution time.
 
-We can also see that there are more killed tasks when we kill the tasktracker after the completion of the map tasks. Indeed, when a node is killed, we looses both the map results that he had and the work he had done on the reduce phase. When we killed the tasktracker after the end of the map tasks, we actually saw the percentage of map completion go backward, because some map tasks had to be done again.
+We can also see that there are more killed tasks when we kill the tasktracker after the completion of the map tasks. Indeed, when a node is killed, we looses both the map results that it had and the work it had done on the reduce phase. When we killed the tasktracker after the end of the map tasks, we actually saw the percentage of map completion go backward, because some map tasks had to be done again.
 
 \section*{Question 2.1}
 
@@ -144,7 +144,7 @@ The next table shows the execution times.
 \end{center}
 
 For the sort benchmarks, we can see that the time taken by Map tasks is the same for all the values (3sec in average, 7 at worst).
-However, the time taken by Shuffle decreases when the value increases: in average, it is 15sec for 0.05 (18 at worst), 12sec for 0.5 (17 at worst) and 11sec for 1 (14 at worst). For the time taken by Reduce tasks, it's more quickly with the slowstart at 0.5: it is 7sec in average (11 at worst), against 11sec for 0.05 (17 at worst) and 10sec for 1 (14 at worst).
+However, the time taken by Shuffle decreases when the value increases: in average, it is 15sec for 0.05 (18 at worst), 12sec for 0.5 (17 at worst) and 11sec for 1 (14 at worst). For the time taken by Reduce tasks, it's faster with the slowstart at 0.5: it is 7sec in average (11 at worst), against 11sec for 0.05 (17 at worst) and 10sec for 1 (14 at worst).
 %We can observe that if we want to reduce the global execution time, we can increase the value, that is reduce the Shuffle time, but the Reduce time is lower for the value at 0.5.
 
 For the Wordcount benchmarks, we can see the same thing for the Map time and the Shuffle time, but for the Reduce time, it decreases when the value of slowstart increases: on average, it is 4 minutes and 26sec for 0.05 (4mins, 45 seconds at worst), 3 minutes and 46sec for 0.05 (4 minutes, 15 seconds at worst) and 3 minutes and 40sec for 1 (3 minutes, 59 seconds at worst).
@@ -154,7 +154,7 @@ These executions times highlight the fact that a big slowstart can reduce the ex
 With a quick start of the reduce nodes, you can sometimes have a better parallelization and start doing useful computations with your reduce nodes early.
 With a slower start, for applications that require the end of the map phase before starting the reduce phase (wordcount for instance), you won't benefit from starting the reduce phase early, and it will even use some resources that could have been used for the map phase.
 
-It explains why there is no clear tendency in our experiments. Sometimes a slower start is better, sometimes a quicker one is better. It also depends on the application. Wordcount has a less significant reduce phase than sort, and thus the difference in execution time is less visible.
+It explains why there is no clear tendency in our experiments. Sometimes a slower start is better, sometimes a faster one is better. It also depends on the application. Wordcount has a less significant reduce phase than sort, and thus the difference in execution time is less visible.
 
 
 
@@ -177,8 +177,7 @@ We can see on Figure (\ref{values}) that the start of the Reduce tasks depends o
 We run 6 sort applications on different sizes (3*2GB, 2*4GB 1*10GB) under FIFO scheduler, Fair scheduler (preemption disabled), and Fair scheduler
 (preemption enabled) (we used Fair scheduler within the pool).
 
-Jobs were launched with a decreasing input size order and 10 second interval between two
-jobs.
+Jobs were launched with a decreasing input size order and 10 second interval between two jobs. We used a script with the unix command \texttt{sleep 10} to achieve this.
 
 %See the execution time, data locality and the waiting time of the applications. what can
 %you observe?
